@@ -21,6 +21,7 @@ class CreateReportsTable extends Migration
             $table->string('image');
             $table->string('location')->default('mnl');
             $table->boolean('is_resolved');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

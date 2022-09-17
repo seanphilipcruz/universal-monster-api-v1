@@ -43,7 +43,7 @@ class MainController extends Controller
             ->where('location', $this->getStationCode())
             ->orderBy('position')
             ->get()
-            ->take(5);
+            ->take(7);
 
         $headers = Header::whereNull('deleted_at')
             ->where('location', $this->getStationCode())

@@ -12,7 +12,7 @@ trait MediaProcessors {
 
     public function verifyPhoto($fileName, $directory, $longPhoto = false, $banner = false, $banner500 = false, $mobileWallpaper = false, $desktopWallpaper = false): string
     {
-        if($fileName === null || $fileName === "") {
+        if($fileName === null || $fileName === "" || !preg_match('/^[\w&.\-]+\.+[jpeg|jpg|png|webp|jfif|PNG|JPEG|JPG|WEBP|JFIF]+$/', $fileName)) {
             $fileName = $this->getFileName($longPhoto, $banner, $banner500, $mobileWallpaper, $desktopWallpaper);
         } else {
             $photoDirectory = '/images/'.$directory.'/'.$fileName;
