@@ -19,7 +19,7 @@ class CreateMessagesTable extends Migration
             $table->string('email');
             $table->string('contact_number');
             $table->string('topic');
-            $table->text('message');
+            $table->text('content');
             $table->boolean('is_seen');
             $table->string('location');
             $table->softDeletes();
