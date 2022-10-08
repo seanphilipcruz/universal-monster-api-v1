@@ -8,7 +8,6 @@ class Timeslot extends Model
 {
     protected $fillable = [
         'show_id',
-        'jock_id',
         'day',
         'start',
         'end',

@@ -146,7 +146,7 @@ class MainController extends Controller
             })->whereNull('deleted_at')
             ->first();
 
-        $show_list = Timeslot::with('Show', 'Jock.Timeslot')
+        $show_list = Timeslot::with('Show', 'Jock')
             ->whereNull('deleted_at')
             ->where('day', $day)
             ->where('location', $this->getStationCode())
