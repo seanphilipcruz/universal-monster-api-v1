@@ -15,10 +15,10 @@ trait MediaProcessors {
         if($fileName === null || $fileName === "" || !preg_match('/^[\w&.\-]+\.+[jpeg|jpg|png|webp|jfif|PNG|JPEG|JPG|WEBP|JFIF]+$/', $fileName)) {
             $fileName = $this->getFileName($longPhoto, $banner, $banner500, $mobileWallpaper, $desktopWallpaper);
         } else {
-            $photoDirectory = '/images/'.$directory.'/'.$fileName;
+            $photoDirectory = $this->getAppUrl() . '/images/'.$directory.'/'.$fileName;
 
             if(!File::exists($photoDirectory)) {
-                return ($this->getAppEnvironment() === 'dev' ? 'http://127.0.0.2' : 'https://rx931.com') . '/images/'.$directory.'/'.$fileName;
+                return $this->getAppUrl() . '/images/'.$directory.'/'.$fileName;
             } else {
                 $fileName = $this->getFileName($longPhoto, $banner, $banner500, $mobileWallpaper, $desktopWallpaper);
             }

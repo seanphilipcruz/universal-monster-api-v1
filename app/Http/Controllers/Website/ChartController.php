@@ -313,7 +313,7 @@ class ChartController extends Controller
     {
         $southside = Show::with('Timeslot', 'Jock')->findOrFail(35); // Southside Sounds
 
-        $southsideCharts = Chart::with('Song.Album.Artist')->whereNull('deleted_at')
+        $southside_charts = Chart::with('Song.Album.Artist')->whereNull('deleted_at')
             ->where('dated', $this->getLatestSouthsidesDate())
             ->where('local', '=', 1)
             ->where('position', '>', 0)
@@ -321,9 +321,16 @@ class ChartController extends Controller
             ->orderBy('position')
             ->get();
 
+        $chart_date = date('F d, Y', strtotime($this->getLatestSouthsidesDate()));
+
+        $southside['icon'] = $this->verifyPhoto($southside['icon'], 'shows');
+        $southside['header_image'] = $this->verifyPhoto($southside['header_image'], 'shows');
+        $southside['background_image'] = $this->verifyPhoto($southside['background_image'], 'shows');
+
         return response()->json([
             'show' => $southside,
-            'charts' => $southsideCharts
+            'charts' => $southside_charts,
+            'chart_date' => $chart_date
         ]);
     }
 
@@ -335,6 +342,8 @@ class ChartController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return response()->json($outbreaks);
+        return response()->json([
+            'outbreak_charts' => $outbreaks
+        ]);
     }
 }

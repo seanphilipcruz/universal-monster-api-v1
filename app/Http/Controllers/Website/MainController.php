@@ -130,7 +130,7 @@ class MainController extends Controller
         $getTime = Carbon::now('Asia/Manila');
         $time = date('H:i', strtotime($getTime));
 
-        $stream = 'https://ph-icecast-win.eradioportal.com:8443/monsterrx'; // 'https://sg-icecast.eradioportal.com:8443/monsterrx' temporary link in-case 'http://ph-icecast-win.eradioportal.com:8000/monsterrx'
+        $stream = $this->getStream(); // 'https://sg-icecast.eradioportal.com:8443/monsterrx' temporary link in-case 'http://ph-icecast-win.eradioportal.com:8000/monsterrx'
 
         $current_show = Show::with('Timeslot.Jock')
             ->whereHas('Timeslot', function($query) {

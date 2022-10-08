@@ -22,7 +22,36 @@ trait SystemFunctions {
     }
 
     public function getFileLocation($folderName, $file) {
-        return $this->getAppEnvironment() === 'dev' ? 'http://127.0.0.2/images/'.$folderName.'/'.$file : 'https://rx931.com/images/'.$folderName.'/'.$file;
+        return $this->getAppEnvironment() === 'dev' ? 'http://127.0.0.2/images/'.$folderName.'/'.$file : $this->getAppUrl() . '/images/'.$folderName.'/'.$file;
+    }
+
+    public function getStream() {
+        $station_code = $this->getStationCode();
+
+        if ($station_code === 'cbu') {
+            return 'https://sg-icecast.eradioportal.com:8443/rxcebu';
+        } else if ($station_code === 'dav') {
+            return 'https://sg-icecast.eradioportal.com:8443/monsterrx_davao';
+        } else {
+            return 'https://ph-icecast-win.eradioportal.com:8443/monsterrx';
+        }
+    }
+
+    public function getAppUrl() {
+        $application_environment = $this->getAppEnvironment();
+        $station_code = $this->getStationCode();
+
+        if ($application_environment !== 'dev') {
+            if ($station_code === 'cbu') {
+                return 'https://monstercebu.com';
+            } else if ($station_code === 'dav') {
+                return 'https://monsterdavao.com';
+            } else {
+                return 'https://rx931.com';
+            }
+        } else {
+            return Env::get('APP_URL');
+        }
     }
 
     public function getStationCode() {

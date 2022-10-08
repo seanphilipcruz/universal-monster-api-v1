@@ -75,6 +75,8 @@ Route::prefix('website')->group(function() {
     Route::get('/charts', [ChartController::class, 'index'])->name('charts');
     Route::get('/daily', [ChartController::class, 'daily'])->name('daily.charts');
     Route::get('/allTime', [ChartController::class, 'allTimeHit'])->name('all.time');
+    Route::get('/southside', [ChartController::class, 'southside'])->name('southside.sounds');
+    Route::get('/outbreaks', [ChartController::class, 'outbreaks'])->name('chart.outbreaks');
 
     Route::get('/indiegrounds', [ChartController::class, 'indieground'])->name('indieground');
     Route::get('/song/{id}', [ChartController::class, 'getSongData'])->name('get.song');
