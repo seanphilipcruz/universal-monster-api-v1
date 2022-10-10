@@ -20,7 +20,7 @@ class PodcastController extends Controller
         $podcasts = Podcast::with('Show')
             ->whereNull('deleted_at')
             ->where('location', $this->getStationCode())
-            ->orderBy('created_at', 'desc')
+            ->orderBy('date', 'desc')
             ->simplePaginate(16);
 
         $shows = Show::with('Podcast')
@@ -39,7 +39,7 @@ class PodcastController extends Controller
                     $query->whereNull('deleted_at')->where('id', '=', $request);
                 })->whereNull('deleted_at')
                 ->where('location', $this->getStationCode())
-                ->orderBy('created_at', 'desc')
+                ->orderBy('date', 'desc')
                 ->simplePaginate(16);
 
             $podcasts->appends(['filter' => $request['filter']]);
@@ -50,7 +50,7 @@ class PodcastController extends Controller
                 ->whereNull('deleted_at')
                 ->where('location', $this->getStationCode())
                 ->where('episode', 'like', '%'.$request['query'].'%')
-                ->orderBy('created_at', 'desc')
+                ->orderBy('date', 'desc')
                 ->simplePaginate(16);
 
             if($podcasts->count() < 1) {
