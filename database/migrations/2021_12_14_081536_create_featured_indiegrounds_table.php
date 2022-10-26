@@ -18,7 +18,8 @@ class CreateFeaturedIndiegroundsTable extends Migration
             $table->unsignedBigInteger('indieground_id');
             $table->string('header');
             $table->text('content');
-            $table->date('date');
+            $table->string('month');
+            $table->year('year');
             $table->softDeletes();
             $table->timestamps();
         });

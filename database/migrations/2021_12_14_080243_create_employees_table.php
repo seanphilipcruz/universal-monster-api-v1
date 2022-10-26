@@ -24,7 +24,7 @@ class CreateEmployeesTable extends Migration
             $table->date('birthday')->nullable();
             $table->string('contact_number')->nullable();
             $table->string('address')->nullable();
-            $table->string('location');
+            $table->string('location')->default('mnl');
             $table->boolean('is_active')->nullable()->default(0);
             $table->softDeletes();
             $table->timestamps();

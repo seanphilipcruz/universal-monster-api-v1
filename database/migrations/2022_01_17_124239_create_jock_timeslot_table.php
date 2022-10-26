@@ -14,10 +14,8 @@ class CreateJockTimeslotTable extends Migration
     public function up()
     {
         Schema::create('jock_timeslot', function (Blueprint $table) {
-            $table->unsignedBigInteger('timeslot_id');
             $table->unsignedBigInteger('jock_id');
-            $table->softDeletes();
-            $table->timestamps();
+            $table->unsignedBigInteger('timeslot_id');
         });
     }
 
@@ -28,6 +26,6 @@ class CreateJockTimeslotTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('timeslot_jock');
+        Schema::dropIfExists('jock_timeslot');
     }
 }

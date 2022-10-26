@@ -29,6 +29,6 @@ class CreateRelevantsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('relevants');
+        Schema::dropIfExists('relateds');
     }
 }

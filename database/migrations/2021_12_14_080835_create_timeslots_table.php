@@ -16,7 +16,6 @@ class CreateTimeslotsTable extends Migration
         Schema::create('timeslots', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('show_id');
-            $table->unsignedBigInteger('jock_id');
             $table->string('day');
             $table->time('start');
             $table->time('end');

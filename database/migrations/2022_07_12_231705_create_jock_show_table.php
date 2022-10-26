@@ -16,7 +16,6 @@ class CreateJockShowTable extends Migration
         Schema::create('jock_show', function (Blueprint $table) {
             $table->unsignedBigInteger('jock_id');
             $table->unsignedBigInteger('show_id');
-            $table->timestamps();
         });
     }
 
