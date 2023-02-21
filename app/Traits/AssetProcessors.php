@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 trait AssetProcessors {
     use SystemFunctions;
 
-    public function storePhoto(Request $request, string $path, string $directory, bool $universal, $profile_pic = false, $header_pic = false, $main_pic = false): string
+    public function storePhoto(Request $request, string $path, string $directory, $universal = false, $profile_pic = false, $header_pic = false, $main_pic = false): string
     {
         $image = $request->file('image');
 

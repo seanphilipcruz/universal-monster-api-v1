@@ -20,6 +20,6 @@ class Indie extends Model
     }
 
     public function Feature() {
-        return $this->hasMany(Feature::class, 'independent_id');
+        return $this->hasMany(Feature::class);
     }
 }

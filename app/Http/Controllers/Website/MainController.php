@@ -27,7 +27,7 @@ class MainController extends Controller
     use JockFunctions;
     use ChartFunctions;
 
-    public function home(Request $request)
+    public function home()
     {
         $giveaway = Contest::whereNull('deleted_at')
             ->orderBy('type')
@@ -139,8 +139,8 @@ class MainController extends Controller
                 $time = date('H:i', strtotime($getTime));
 
                 $query->whereNull('deleted_at')
-                    ->where('end', '>', $time)
                     ->where('start', '<=', $time)
+                    ->where('end', '>' , $time)
                     ->where('day', '=', $day)
                     ->where('location', $this->getStationCode());
             })->whereNull('deleted_at')

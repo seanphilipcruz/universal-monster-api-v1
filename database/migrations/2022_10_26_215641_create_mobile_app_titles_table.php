@@ -16,6 +16,7 @@ class CreateMobileAppTitlesTable extends Migration
     {
         Schema::create('mobile_app_titles', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('asset_id');
             $table->text('chart_title')->comment('Default is: Countdown Top 7');
             $table->text('chart_sub_title')->comment('Default is: Catch the countdown every Friday, 7 to 8pm with Hazel Hottie');
             $table->text('article_title')->comment("Default is: What\'s Hot?");

@@ -25,7 +25,7 @@ class JockController extends Controller
         $time = date('H:i', strtotime($getTime));
 
         // old sorting where it was sorted by jock id.
-        $jocks = Employee::with('Jock.Show')->whereHas('Jock', function(Builder $query) {
+        $jocks = Employee::with('Jock.Show', 'Jock.Fact', 'Jock.Image', 'Jock.Link', 'Jock.Award')->whereHas('Jock', function(Builder $query) {
             $query->where('is_active', '=', 1);
         })->has('Jock.Show')
             ->where('location', $this->getStationCode())
@@ -55,8 +55,11 @@ class JockController extends Controller
     }
 
     public function view($slugString) {
-        $jock = Jock::with('Show', 'Fact', 'Image', 'Link', 'Award')
+        $jock = Jock::with('Show', 'Fact', 'Link', 'Award')
             ->where('slug_string', '=', $slugString)
+            ->whereHas('Image', function(Builder $builder) {
+                $builder->whereNull('deleted_at');
+            })
             ->where('is_active', '=', 1)
             ->first();
 

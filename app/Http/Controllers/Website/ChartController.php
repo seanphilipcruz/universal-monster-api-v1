@@ -236,7 +236,7 @@ class ChartController extends Controller
             ->whereNull('deleted_at')
             ->get();
 
-        if($request->has('indieground_id')) {
+        if ($request->has('indieground_id')) {
             $indieground_artist = Indie::with(['Artist' => function($query) {
                 $query->with(['Album' => function($query) {
                     $query->with(['Song' => function($query) {
@@ -284,6 +284,11 @@ class ChartController extends Controller
                     }
                 }
             }
+        }
+
+        foreach($featured as $indieground_artist) {
+            $indieground_artist->Indie->image = $this->verifyPhoto($indieground_artist->Indie->image, 'indie');
+            $indieground_artist->Indie->Artist->image = $this->verifyPhoto($indieground_artist->Indie->Artist->image, 'artists');
         }
 
         return response()->json([
