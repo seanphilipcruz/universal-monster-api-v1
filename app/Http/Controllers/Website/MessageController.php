@@ -194,10 +194,7 @@ class MessageController extends Controller
                 'message' => 'Message successfully sent! Thank you for reaching out monster!'
             ], 201);
         } else {
-            return response()->json([
-                'status' => 'error',
-                'message' => $validator->errors()->all()
-            ], 400);
+            return $this->json('error', $validator->errors()->all(), 400);
         }
     }
 }

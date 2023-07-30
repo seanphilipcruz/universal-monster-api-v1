@@ -4,83 +4,37 @@ namespace App\Http\Controllers\Website\Content\Charts;
 
 use App\Http\Controllers\Controller;
 use App\Models\Chart;
+use App\Models\Song;
+use App\Traits\ChartFunctions;
 use Illuminate\Http\Request;
 
 class SouthsideController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    use ChartFunctions;
+
     public function index()
     {
-        //
+        $southsides = Chart::with('Song.Album.Artist')
+            ->where('dated', '=', $this->getLatestSouthsidesDate())
+            ->whereNull('deleted_at')
+            ->where('local', '=', 1)
+            ->where('position', '>', 0)
+            ->where('location', '=', $this->getStationCode())
+            ->orderBy('position')
+            ->get();
+
+        $songs = Song::with('Album.Artist')->latest()->get();
+
+        $data = [
+            'southsides' => $southsides,
+            'songs' => $songs
+        ];
+
+        return response()->json($data);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Chart  $chart
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Chart $chart)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Chart  $chart
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Chart $chart)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Chart  $chart
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Chart $chart)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Chart  $chart
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Chart $chart)
-    {
-        //
+        // Refer to store() in ChartController.php
     }
 }

@@ -5,82 +5,67 @@ namespace App\Http\Controllers\Website\Content\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Throwable;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        //
+        $users = User::with('Employee')->get();
+
+        return response()->json([
+            'users' => $users
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        // Refer to registration controller
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function show(User $user)
+    public function show($id)
     {
-        //
+        try {
+            $user = User::with('Employee')->findOrFail($id);
+        } catch (Throwable $exception) {
+            return $this->json('error', $exception->getMessage(), 404);
+        }
+
+        return response()->json([
+            'user' => $user
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(User $user)
+    // For updating the password.
+    // Todo: Add last login to automatically disable user access.
+    public function update($id, Request $request)
     {
-        //
+        try {
+            $user = User::with('Employee')->findOrFail($id);
+        } catch (Throwable $exception) {
+            return $this->json('error', $exception->getMessage(), 400);
+        }
+
+        $password_verify = Hash::check($request['password'], $user['password']);
+
+        if (!$password_verify) {
+            return response()->json([
+                'status' => 'error',
+                'message' => __('responses.change_password_failed')
+            ], 400);
+        }
+
+        $user->fill($request->only('password'))->save();
+
+        return response()->json([
+            'status' => 'error',
+            'message' => __('responses.change_password_success')
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, User $user)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(User $user)
     {
-        //
+        // No deleting of users
     }
 }

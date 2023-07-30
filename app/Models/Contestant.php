@@ -20,7 +20,8 @@ class Contestant extends Model implements AuthenticatableContract, CanResetPassw
         'birthday',
         'city',
         'email',
-        'password'
+        'password',
+        'image'
     ];
 
     public function Contest() {

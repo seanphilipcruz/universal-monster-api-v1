@@ -13,7 +13,7 @@ class Award extends Model
         'title',
         'description',
         'year',
-        'special',
+        'is_special',
         'location'
     ];
 

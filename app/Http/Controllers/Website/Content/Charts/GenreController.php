@@ -5,82 +5,82 @@ namespace App\Http\Controllers\Website\Content\Charts;
 use App\Http\Controllers\Controller;
 use App\Models\Genre;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Throwable;
 
 class GenreController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        //
+        $genres = Genre::whereNull('deleted_at')->get();
+
+        return response()->json([
+            'genres' => $genres
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'description' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->json('error', $validator->errors()->all(), 400);
+        }
+
+        $genre = new Genre($request->all());
+        $genre->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => __('responses.success_created', ['Model' => 'Genre'])
+        ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Genre  $genre
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Genre $genre)
+    public function show($id)
     {
-        //
+        try {
+            $genre = Genre::findOrFail($id);
+        } catch (Throwable $exception) {
+            return $this->json('error', $exception->getMessage(), 404);
+        }
+
+        return response()->json([
+            'genre' => $genre
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Genre  $genre
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Genre $genre)
+    public function update($id, Request $request)
     {
-        //
+        try {
+            $genre = Genre::findOrFail($id);
+
+            $genre->update($request->all());
+        } catch (Throwable $exception) {
+            return $this->json('error', $exception->getMessage(), 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => __('responses.success_updated', ['Model' => 'Genre'])
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Genre  $genre
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Genre $genre)
+    public function destroy($id)
     {
-        //
-    }
+        try {
+            $genre = Genre::with('Album')->findOrFail($id);
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Genre  $genre
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Genre $genre)
-    {
-        //
+            $genre->deleteOrFail();
+        } catch (Throwable $exception) {
+            return $this->json('error', $exception->getMessage(), 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => __('responses.success_deleted', ['Model' => 'Genre'])
+        ]);
     }
 }

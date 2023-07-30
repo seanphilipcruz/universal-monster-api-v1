@@ -17,7 +17,7 @@ class CreateUserLogsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('action');
-            $table->unsignedBigInteger('employee_id');
+            $table->unsignedBigInteger('employee_id')->nullable();
             $table->string('location');
             $table->timestamps();
         });

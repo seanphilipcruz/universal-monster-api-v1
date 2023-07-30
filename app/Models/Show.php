@@ -38,4 +38,8 @@ class Show extends Model
     public function Podcast() {
         return $this->hasMany(Podcast::class);
     }
+
+    public function Award() {
+        return $this->hasMany(Award::class);
+    }
 }

@@ -14,8 +14,7 @@ use Illuminate\Support\Facades\Validator;
 
 class AssetController extends Controller
 {
-    use AssetProcessors;
-    use SystemFunctions;
+    use AssetProcessors, SystemFunctions;
     use MediaProcessors;
 
     public function index() {
@@ -45,14 +44,8 @@ class AssetController extends Controller
             $monster_asset->podcast_icon = $this->verifyMobileAsset($monster_asset['podcast_icon']);
             $monster_asset->article_page_icon = $this->verifyMobileAsset($monster_asset['article_page_icon']);
             $monster_asset->youtube_page_icon = $this->verifyMobileAsset($monster_asset['youtube_page_icon']);
-
-
-
         } catch (ModelNotFoundException $exception) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Error occurred! ' . $exception->getMessage()
-            ], 404);
+            return $this->json('error', $exception->getMessage(), 400);
         }
 
         return response()->json([
@@ -74,10 +67,7 @@ class AssetController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $validator->errors()->all()
-            ], 400);
+            return $this->json('error', $validator->errors()->all(), 400);
         }
 
         $website_entry = Asset::all()
@@ -109,19 +99,13 @@ class AssetController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $validator->errors()->all()
-            ], 400);
+            return $this->json('error', $validator->errors()->all(), 400);
         }
 
         try {
             $monster_asset = Asset::with('Title')->findOrFail($id);
         } catch (ModelNotFoundException $exception) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $exception->getMessage()
-            ], 404);
+            return $this->json('error', $exception->getMessage(), 400);
         }
 
         if ($request['asset_type'] === 'charts') {
@@ -216,10 +200,7 @@ class AssetController extends Controller
         try {
             $monster_asset = Asset::with('Title')->findOrFail($id);
         } catch (ModelNotFoundException $exception) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $exception->getMessage()
-            ], 404);
+            return $this->json('error', $exception->getMessage(), 400);
         }
 
         $monster_asset->delete();
@@ -237,10 +218,7 @@ class AssetController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $validator->errors()->all()
-            ], 400);
+            return $this->json('error', $validator->errors()->all(), 400);
         }
 
         $path = 'images/_assets/mobile';
@@ -253,7 +231,10 @@ class AssetController extends Controller
         try {
             $asset = Asset::with('Title')->findOrFail($request['id']);
 
-            if ($asset_type == "charts") {
+            if ($asset_type == "logo") {
+                $asset['logo'] = $icon;
+                $asset->save();
+            } else if ($asset_type == "charts") {
                 $asset['chart_icon'] = $icon;
                 $asset->save();
             } else if ($asset_type == "articles") {
@@ -270,10 +251,7 @@ class AssetController extends Controller
                 $asset->save();
             }
         } catch (Exception $exception) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $exception->getMessage()
-            ], 404);
+            return $this->json('error', $exception->getMessage(), 400);
         }
 
         return response()->json([

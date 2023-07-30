@@ -25,10 +25,7 @@ class TitleController extends Controller
         try {
             $monster_titles = Title::findOrFail($id);
         } catch (ModelNotFoundException $exception) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Error occurred! ' . $exception->getMessage()
-            ], 404);
+            return $this->json('error', $exception->getMessage(), 400);
         }
 
         return response()->json([
@@ -52,10 +49,7 @@ class TitleController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $validator->errors()->all()
-            ], 400);
+            return $this->json('error', $validator->errors()->all(), 400);
         }
 
         $website_entry = Title::all()
@@ -95,19 +89,13 @@ class TitleController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $validator->errors()->all()
-            ], 400);
+            return $this->json('error', $validator->errors()->all(), 400);
         }
 
         try {
             $monster_title = Title::findOrFail($id);
         } catch (ModelNotFoundException $exception) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $exception->getMessage()
-            ], 404);
+            return $this->json('error', $exception->getMessage(), 400);
         }
 
         $monster_title->update($request->all());
@@ -122,10 +110,7 @@ class TitleController extends Controller
         try {
             $monster_titles = Title::findOrFail($id);
         } catch (ModelNotFoundException $exception) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Error occurred! ' . $exception->getMessage()
-            ], 404);
+            return $this->json('error', $exception->getMessage(), 400);
         }
 
         $monster_titles->delete();

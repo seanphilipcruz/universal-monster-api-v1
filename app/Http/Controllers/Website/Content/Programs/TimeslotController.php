@@ -3,84 +3,119 @@
 namespace App\Http\Controllers\Website\Content\Programs;
 
 use App\Http\Controllers\Controller;
+use App\Models\Jock;
+use App\Models\Show;
 use App\Models\Timeslot;
+use App\Traits\SystemFunctions;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Throwable;
 
 class TimeslotController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    use SystemFunctions;
+
     public function index()
     {
-        //
+        $day = date('l');
+
+        $jocks = Jock::with('Employee')
+            ->whereHas('Employee', function(Builder $builder) {
+                $builder->where('location', '=', $this->getStationCode());
+            })->whereNull('deleted_at')
+            ->where('is_active', '=', 1)
+            ->orderBy('name')
+            ->get();
+
+        $shows = Show::with('Jock')
+            ->whereNull('deleted_at')
+            ->where('is_active', '=', 1)
+            ->orderBy('title')
+            ->get();
+
+        $timeslots = Timeslot::with('Show', 'Jock')
+            ->whereNull('deleted_at')
+            ->where('day', $day)
+            ->where('location', '=', $this->getStationCode())
+            ->orderBy('start')
+            ->get();
+
+        $data = [
+            'jocks' => $jocks,
+            'shows' => $shows,
+            'timeslots' => $timeslots
+        ];
+
+        return response()->json($data);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'day' => 'required',
+            'start' => 'required',
+            'end' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->json('error', $validator->errors()->all(), 400);
+        }
+
+        $request['location'] = $this->getStationCode();
+
+        $timeslot = new Timeslot($request->all());
+        $timeslot->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => __('responses.success_created', ['Model' => 'Timeslot'])
+        ], 201);
+     }
+
+    public function show($id)
+    {
+        try {
+            $timeslot = Timeslot::with('Show', 'Jock')->findOrFail($id);
+        } catch (Throwable $exception) {
+            return $this->json('error', $exception->getMessage(), 404);
+        }
+
+        return response()->json([
+            'timeslot' => $timeslot
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Timeslot  $timeslot
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Timeslot $timeslot)
+    public function update($id, Request $request)
     {
-        //
+        try {
+            $timeslot = Timeslot::with('Show', 'Jock')->findOrFail($id);
+
+            $timeslot->update($request->all());
+        } catch (Throwable $exception) {
+            return $this->json('error', $exception->getMessage(), 404);
+        }
+
+
+        return response()->json([
+            'status' => 'success',
+            'message' => __('responses.success_updated', ['Model' => 'Timeslot'])
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Timeslot  $timeslot
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Timeslot $timeslot)
+    public function destroy($id)
     {
-        //
-    }
+        try {
+            $timeslot = Timeslot::with('Show', 'Jock')->findOrFail($id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Timeslot  $timeslot
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Timeslot $timeslot)
-    {
-        //
-    }
+            $timeslot->delete();
+        } catch (Throwable $exception) {
+            return $this->json('error', $exception->getMessage(), 404);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Timeslot  $timeslot
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Timeslot $timeslot)
-    {
-        //
+        return response()->json([
+            'status' => 'success',
+            'message' => __('responses.success_deleted', ['Model' => 'Timeslot'])
+        ]);
     }
 }

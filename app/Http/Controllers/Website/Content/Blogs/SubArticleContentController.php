@@ -3,84 +3,77 @@
 namespace App\Http\Controllers\Website\Content\Blogs;
 
 use App\Http\Controllers\Controller;
+use App\Models\Article;
 use App\Models\Content;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Throwable;
 
 class SubArticleContentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'article_id' => 'required',
+            'content' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->json('error', $validator->errors()->all(), 400);
+        }
+
+        $id = $request['article_id'];
+        $content = new Content($request->all());
+        $content->Article()->associate($id);
+        $content->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => __('responses.content_add_success', ['Model' => 'Content'])
+        ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Content  $content
-     * @return \Illuminate\Http\Response
-     */
     public function show(Content $content)
     {
-        //
+        return response()->json([
+            'content' => $content
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Content  $content
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Content $content)
+    public function update($id, Request $request)
     {
-        //
+        try {
+            $content = Content::with('Article')->findOrFail($id);
+
+            $content->update($request->all());
+        } catch (Throwable $exception) {
+            return $this->json('error', $exception->getMessage(), 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => __('responses.success_updated', ['Model' => 'Content'])
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Content  $content
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Content $content)
+    public function destroy($id)
     {
-        //
-    }
+        try {
+            $content = Content::with('Article')->findOrFail($id);
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Content  $content
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Content $content)
-    {
-        //
+            $content->deleteOrFail();
+        } catch (Throwable $exception) {
+            return $this->json('error', $exception->getMessage(), 400);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => __('responses.success_deleted', ['Model' => 'Content'])
+        ]);
     }
 }

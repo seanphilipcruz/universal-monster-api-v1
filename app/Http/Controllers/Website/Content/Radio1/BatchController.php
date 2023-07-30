@@ -4,83 +4,90 @@ namespace App\Http\Controllers\Website\Content\Radio1;
 
 use App\Http\Controllers\Controller;
 use App\Models\StudentJockBatch;
+use App\Traits\SystemFunctions;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Throwable;
 
 class BatchController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    use SystemFunctions;
+
     public function index()
     {
-        //
+        $studentJockBatches = StudentJockBatch::with('Student')
+            ->whereNull('deleted_at')
+            ->where('location', '=', $this->getStationCode())
+            ->get();
+
+        return response()->json([
+            'batches' => $studentJockBatches
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'batch_number' => 'required',
+            'start_year' => 'required',
+            'end_year' => ['required', 'accepted_if:start_year<=end_year']
+        ]);
+
+        if ($validator->fails()) {
+            return $this->json('error', $validator->errors()->all(), 400);
+        }
+
+        $batch = new StudentJockBatch($request->all());
+        $batch->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => __('responses.success_created', ['Model' => 'Radio1 Batch'])
+        ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\StudentJockBatch  $studentJockBatch
-     * @return \Illuminate\Http\Response
-     */
-    public function show(StudentJockBatch $studentJockBatch)
+    public function show($id)
     {
-        //
+        try {
+            $studentJockBatch = StudentJockBatch::with('Student')->findOrFail($id);
+        } catch (Throwable $exception) {
+            return $this->json('error', $exception->getMessage(), 404);
+        }
+
+        return response()->json([
+            'batch' => $studentJockBatch
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\StudentJockBatch  $studentJockBatch
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(StudentJockBatch $studentJockBatch)
+    public function update($id, Request $request)
     {
-        //
+        try {
+            $studentJockBatch = StudentJockBatch::with('Student')->findOrFail($id);
+
+            $studentJockBatch->update($request->all());
+        } catch (Throwable $exception) {
+            return $this->json('error', $exception->getMessage(), 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => __('responses.success_updated', ['Model' => 'Radio1 Batch'])
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\StudentJockBatch  $studentJockBatch
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, StudentJockBatch $studentJockBatch)
+    public function destroy($id)
     {
-        //
-    }
+        try {
+            $studentJockBatch = StudentJockBatch::with('Student')->findOrFail($id);
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\StudentJockBatch  $studentJockBatch
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(StudentJockBatch $studentJockBatch)
-    {
-        //
+            $studentJockBatch->delete();
+        } catch (Throwable $exception) {
+            return $this->json('error', $exception->getMessage(), 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => __('responses.success_deleted', ['Model' => 'Radio1 Batch'])
+        ]);
     }
 }

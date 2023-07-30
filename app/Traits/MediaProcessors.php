@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 trait MediaProcessors {
     public function verifyAudio($fileName) {
-        return ($this->getAppEnvironment() === 'dev' ? 'http://127.0.0.2' : 'https://rx931.com') . '/audios/'.$fileName;
+        return ($this->getAppEnvironment() === 'dev' ? 'http://127.0.0.2' : 'https://rx931.com') . '/songs/'.$fileName;
     }
 
     public function verifyMobileAsset($fileName, $longPhoto = false, $banner = false, $banner500 = false, $mobileWallpaper = false, $desktopWallpaper = false) {

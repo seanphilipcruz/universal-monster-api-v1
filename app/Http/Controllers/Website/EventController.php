@@ -16,14 +16,14 @@ class EventController extends Controller
     public function index()
     {
         $year = date('Y');
- 
+
         $events = Gimmick::with('School')
             ->latest()
             ->whereNull('deleted_at')
             ->whereYear('start_date', '=', $year)
             ->where('location', $this->getStationCode())
             ->orderBy('start_date', 'desc')
-            ->get();
+            ->paginate();
 
         foreach ($events as $event) {
             $event->image = $this->verifyPhoto($event->image, 'schools');
@@ -34,7 +34,7 @@ class EventController extends Controller
         }
 
         return response()->json([
-            'events' => $events
+            'events' => $events,
         ]);
     }
 

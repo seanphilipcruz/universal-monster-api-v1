@@ -19,11 +19,6 @@ class DesignationController extends Controller
         ]);
     }
 
-    public function create()
-    {
-        // Obsolete
-    }
-
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -32,10 +27,7 @@ class DesignationController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $validator->errors()->all()
-            ], 400);
+            return $this->json('error', $validator->errors()->all(), 400);
         }
 
         $designation = new Designation($request->all());
@@ -43,7 +35,7 @@ class DesignationController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Designation successfully created!'
+            'message' => __('responses.success_created', ['Model' => 'Designation'])
         ], 201);
     }
 
@@ -52,10 +44,7 @@ class DesignationController extends Controller
         try {
             $designation = Designation::with('Employee')->findOrFail($id);
         } catch (ModelNotFoundException $exception) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Error occurred! ' . $exception->getMessage()
-            ], 404);
+            return $this->json('error', $exception->getMessage(), 400);
         }
 
         return response()->json([
@@ -67,30 +56,15 @@ class DesignationController extends Controller
     {
         try {
             $designation = Designation::with('Employee')->findOrFail($id);
+
+            $designation->update($request->all());
         } catch (ModelNotFoundException $exception) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Error occurred! ' . $exception->getMessage()
-            ], 404);
+            return $this->json('error', $exception->getMessage(), 404);
         }
-
-        $validator = Validator::make($request->all(), [
-            'name' => 'min:2|required',
-            'level' => 'numeric|required'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $validator->errors()->all()
-            ], 400);
-        }
-
-        $designation->update($request->all());
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Designation has been successfully updated!'
+            'message' => __('responses.success_updated', ['Model' => 'Designation'])
         ]);
     }
 
@@ -98,18 +72,15 @@ class DesignationController extends Controller
     {
         try {
             $designation = Designation::with('Employee')->findOrFail($id);
-        } catch (ModelNotFoundException $exception) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Error occurred! ' . $exception->getMessage()
-            ], 404);
-        }
 
-        $designation->delete();
+            $designation->delete();
+        } catch (ModelNotFoundException $exception) {
+            return $this->json('error', $exception->getMessage(), 400);
+        }
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Designation has been deleted successfully!'
+            'message' => __('responses.success_deleted', ['Model' => 'Designation'])
         ]);
     }
 }

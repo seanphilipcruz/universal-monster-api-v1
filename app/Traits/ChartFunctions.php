@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Models\Chart;
+use App\Models\Outbreak;
 
 trait ChartFunctions {
     use SystemFunctions;
@@ -33,6 +34,13 @@ trait ChartFunctions {
         return Chart::whereNull('deleted_at')
             ->where('daily', '=', 0)
             ->where('local', '=', 1)
+            ->where('location', '=', $this->getStationCode())
+            ->select('dated')
+            ->max('dated');
+    }
+
+    public function getLatestOutbreakDate() {
+        return Outbreak::whereNull('deleted_at')
             ->where('location', '=', $this->getStationCode())
             ->select('dated')
             ->max('dated');

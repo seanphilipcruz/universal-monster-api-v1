@@ -48,10 +48,7 @@ class EmployeeController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $validator->errors()->all()
-            ], 400);
+            return $this->json('error', $validator->errors()->all(), 400);
         }
 
         $employee = new Employee($request->all());
@@ -59,7 +56,7 @@ class EmployeeController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => __('responses.success_created', ['model' => 'employee'])
+            'message' => __('responses.success_created', ['model' => 'Employee'])
         ], 201);
     }
 
@@ -68,10 +65,7 @@ class EmployeeController extends Controller
         try {
             $employee = Employee::with('Designation')->findOrFail($id);
         } catch (ModelNotFoundException $exception) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $exception->getMessage()
-            ], 404);
+            return $this->json('error', $exception->getMessage(), 400);
         }
 
         return response()->json([
@@ -81,7 +75,11 @@ class EmployeeController extends Controller
 
     public function update($id, Request $request)
     {
-        $request['location'] = $this->getStationCode();
+        try {
+            $employee = Employee::with('Designation')->findOrFail($id);
+        } catch (ModelNotFoundException $exception) {
+            return $this->json('error', $exception->getMessage(), 400);
+        }
 
         $validator = Validator::make($request->all(), [
             'designation_id' => 'required',
@@ -94,26 +92,14 @@ class EmployeeController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $validator->errors()->all()
-            ], 400);
-        }
-
-        try {
-            $employee = Employee::with('Designation')->findOrFail($id);
-        } catch (ModelNotFoundException $exception) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $exception->getMessage()
-            ], 404);
+            return $this->json('error', $validator->errors()->all(), 400);
         }
 
         $employee->update($request->all());
 
         return response()->json([
-            'status' => 'error',
-            'message' => __('responses.success_updated', ['model' => 'employee'])
+            'status' => 'success',
+            'message' => __('responses.success_updated', ['model' => 'Employee'])
         ]);
     }
 
@@ -122,24 +108,18 @@ class EmployeeController extends Controller
         try {
             $employee = Employee::with('Designation')->findOrFail($id);
         } catch (ModelNotFoundException $exception) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $exception->getMessage()
-            ], 404);
+            return $this->json('error', $exception->getMessage(), 400);
         }
 
         try {
             $employee->delete();
         } catch (QueryException $exception) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $exception->getMessage()
-            ], 400);
+            return $this->json('error', $exception->getMessage(), 400);
         }
 
         return response()->json([
             'status' => 'success',
-            'message' => __('responses.success_deleted', ['model' => 'employee'])
+            'message' => __('responses.success_deleted', ['model' => 'Employee'])
         ]);
     }
 }
