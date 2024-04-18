@@ -14,7 +14,7 @@ class TitleController extends Controller
     use SystemFunctions;
 
     public function index() {
-        $monster_titles = Title::all();
+        $monster_titles = Title::with('Asset')->get();
 
         return response()->json([
             'monster_titles' => $monster_titles

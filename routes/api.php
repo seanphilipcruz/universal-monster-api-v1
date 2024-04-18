@@ -107,6 +107,7 @@ Route::prefix('mobile')->group(function() {
 
     Route::get('youtube/{max}', [MobileMainController::class, 'youTube'])->name('youtube');
 
+    Route::get('asset/{id}', [MobileMainController::class, 'assets'])->name('dynamic.assets');
     Route::get('search', [MobileMainController::class, 'search'])->name('search');
     Route::get('browse', [MobileMainController::class, 'browse'])->name('browse');
     Route::get('help', [MobileMainController::class, 'help'])->name('help');

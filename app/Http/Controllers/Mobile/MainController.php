@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Chart;
 use App\Models\Contest;
+use App\Models\Mobile\Content\Asset;
 use App\Models\Podcast;
 use App\Models\Show;
 use App\Models\Timeslot;
@@ -15,6 +16,7 @@ use App\Traits\JockFunctions;
 use App\Traits\SystemFunctions;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use SebastianBergmann\Type\Exception;
 
 class MainController extends Controller
 {
@@ -132,7 +134,8 @@ class MainController extends Controller
         $day = Carbon::now()->format('l');
         $time = date('H:i');
 
-        $stream = 'https://ph-icecast-win.eradioportal.com:8443/monsterrx'; // 'https://sg-icecast.eradioportal.com:8443/monsterrx' // temporary link in-case 'http://sg-icecast-win.eradioportal.com:8000/monsterrx'
+        // 20240419 Update
+        $stream = 'https://in-icecast.eradioportal.com:8443/monsterrrx';
 
         $currentShow = Show::with('Timeslot', 'Jock.Employee')
             ->whereHas('Timeslot', function($query) {

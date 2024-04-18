@@ -23,7 +23,8 @@ class CreateMobileAppTitlesTable extends Migration
             $table->text('article_sub_title')->comment('Default is: News, Blogs, and Articles');
             $table->text('podcast_title')->comment('Default is: The Morning Rush');
             $table->text('podcast_sub_title')->comment('Default is: Mondays to Fridays from 6 to 10am');
-            $table->text('articles_main_page_title')->comment('Default is: Monster News, Blogs and Articles');
+            $table->text('articles_main_page_title')->comment('Default is: What\'s Hot?');
+            $table->text('articles_main_page_subtitle')->comment('Default is: News, Blogs, and Articles');
             $table->text('podcast_main_page_title')->comment('Default is: Monster RX93.1 Podcast Channel');
             $table->text('youtube_main_page_title')->comment('Default is: Monster RX93.1 YouTube Channel');
             $table->string('location')->default('mnl');
