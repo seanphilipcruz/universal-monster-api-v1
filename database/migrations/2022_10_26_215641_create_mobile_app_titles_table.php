@@ -32,6 +32,7 @@ class CreateMobileAppTitlesTable extends Migration
         });
 
         DB::table('mobile_app_titles')->insert([
+            'asset_id' => 1,
             'chart_title' => 'Countdown Top 7',
             'chart_sub_title' => 'Catch the countdown every Friday, 7 to 8pm with Hazel Hottie',
             'article_title' => "What's Hot?",
@@ -39,6 +40,7 @@ class CreateMobileAppTitlesTable extends Migration
             'podcast_title' => 'The Morning Rush',
             'podcast_sub_title' => 'Mondays to Fridays from 6 to 10am',
             'articles_main_page_title' => 'Monster News, Blogs and Articles',
+            'articles_main_page_subtitle' => 'News, Blogs, and Articles',
             'podcast_main_page_title' => 'Monster RX93.1 Podcast Channel',
             'youtube_main_page_title' => 'Monster RX93.1 YouTube Channel',
             'location' => 'mnl'
