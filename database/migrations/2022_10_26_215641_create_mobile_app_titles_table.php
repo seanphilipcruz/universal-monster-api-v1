@@ -31,7 +31,7 @@ class CreateMobileAppTitlesTable extends Migration
             $table->timestamps();
         });
 
-        DB::table('mobile_app_titles')->insert([
+        /*DB::table('mobile_app_titles')->insert([
             'asset_id' => 1,
             'chart_title' => 'Countdown Top 7',
             'chart_sub_title' => 'Catch the countdown every Friday, 7 to 8pm with Hazel Hottie',
@@ -44,7 +44,7 @@ class CreateMobileAppTitlesTable extends Migration
             'podcast_main_page_title' => 'Monster RX93.1 Podcast Channel',
             'youtube_main_page_title' => 'Monster RX93.1 YouTube Channel',
             'location' => 'mnl'
-        ]);
+        ]);*/
     }
 
     /**

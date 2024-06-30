@@ -20,10 +20,10 @@ class CreateStudentsTable extends Migration
             $table->string('middle_name')->nullable();
             $table->string('last_name');
             $table->string('course');
-            $table->text('data')->nullable();
-            $table->string('image')->nullable()->default('default.png');
             $table->integer('year_level');
             $table->string('location')->default('mnl');
+            $table->text('data')->nullable();
+            $table->string('image')->nullable()->default('default.png');
             $table->softDeletes();
             $table->timestamps();
         });

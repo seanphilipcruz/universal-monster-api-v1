@@ -18,6 +18,7 @@ class CreateLinksTable extends Migration
             $table->unsignedBigInteger('jock_id');
             $table->unsignedBigInteger('show_id');
             $table->unsignedBigInteger('article_id');
+            $table->unsignedBigInteger('student_jock_id');
             $table->string('website');
             $table->string('url');
             $table->softDeletes();

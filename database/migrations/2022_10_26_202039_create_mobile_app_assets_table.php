@@ -26,7 +26,7 @@ class CreateMobileAppAssetsTable extends Migration
             $table->timestamps();
         });
 
-        DB::table('mobile_app_assets')->insert([
+        /*DB::table('mobile_app_assets')->insert([
             'logo' => 'logo.png',
             'chart_icon' => 'charts.png',
             'article_icon' => 'articles.png',
@@ -34,7 +34,7 @@ class CreateMobileAppAssetsTable extends Migration
             'article_page_icon' => 'articles.png',
             'youtube_page_icon' => 'youtube.png',
             'location' => 'mnl',
-        ]);
+        ]);*/
     }
 
     /**
